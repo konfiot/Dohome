@@ -7,10 +7,13 @@ Dialog::Dialog(char *appd, QWidget *parent) :
     ui(new Ui::Dialog)
 {
     QFile version_txt("dohome/version.txt");
-    version_txt.open(QIODevice::ReadOnly);
-    QString current_version(version_txt.readLine());
+    QString current_version;
+    if (version_txt.open(QIODevice::ReadOnly)){
+        current_version = version_txt.readLine();
+    } else {
+        current_version = "0.0.0";
+    }
     version_txt.close();
-
 
     application_directory = new QString(appd);
 
@@ -120,7 +123,7 @@ bool Dialog::verify_update(int exit_code){
         }
     } else {
         ui->debugDisplay->append(QString("Erreur lors de la decompression de la nouvelle mise a jour"));        
-    
+
         return false;
     }
 }
