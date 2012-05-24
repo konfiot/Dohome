@@ -1,0 +1,1 @@
+zip.exe %1\..\dohome %1\dohome.zip		:: On zippe le dossier dans le repertoire a synchroniser
