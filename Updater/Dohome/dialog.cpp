@@ -113,6 +113,7 @@ bool Dialog::verify_update(int exit_code){
         ui->debugDisplay->append(QString("Décompression terminée\nSuppression du fichier compréssé"));
         if (zip_out->remove()){
             ui->debugDisplay->append(QString("Mise a jour terminée avec succes, lancement de l'application"));
+            ui->debugDisplay->append(QString("Vous avez la derniere version, lancement de l'application : ") + QString("file:///") + application_directory->replace(QLatin1Char('\\'), QLatin1Char('/')) + QString("dohome/index.html"));
             QDesktopServices::openUrl(QString("file:///") + application_directory->replace(QLatin1Char('\\'), QLatin1Char('/')) + QString("dohome/index.html"));
 
             return true;
