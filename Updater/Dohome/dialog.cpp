@@ -48,7 +48,7 @@ bool Dialog::search_updates(bool error){
 
                 QObject::connect(serveur_dl, SIGNAL(done(bool)), this, SLOT(unzip_update(bool)));
             } else {
-                ui->debugDisplay->append(QString("Vous avez la derniere version, lancement de l'application"));
+                ui->debugDisplay->append(QString("Vous avez la derniere version, lancement de l'application : ") + QString("file:///") + application_directory->replace(QLatin1Char('\\'), QLatin1Char('/')) + QString("dohome/index.html"));
                 QDesktopServices::openUrl(QString("file:///") + application_directory->replace(QLatin1Char('\\'), QLatin1Char('/')) + QString("dohome/index.html"));
             }
         } else {
