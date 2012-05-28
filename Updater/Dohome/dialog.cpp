@@ -37,7 +37,7 @@ Dialog::Dialog(char *appd, QWidget *parent) :
 
 bool Dialog::search_updates(bool error){
     if(!(error)){
-        ui->debugDisplay->append(QString("RÈponse reÁue"));
+        ui->debugDisplay->append(QString("R√©ponse re√ßue"));
         QString result = serveur_search->readAll();
 
         if (result != QString("-1")){
@@ -49,7 +49,7 @@ bool Dialog::search_updates(bool error){
                 QObject::connect(serveur_dl, SIGNAL(done(bool)), this, SLOT(unzip_update(bool)));
             } else {
                 ui->debugDisplay->append(QString("Vous avez la derniere version, lancement de l'application : ") + QString("file:///") + application_directory->replace(QLatin1Char('\\'), QLatin1Char('/')) + QString("dohome/index.html"));
-                QDesktopServices::openUrl(QString("file:///") + application_directory->replace(QLatin1Char('\\'), QLatin1Char('/')) + QString("dohome/index.html"));
+                QDesktopServices::openUrl(QString("file:///") + application_directory->replace(QLatin1Char('\\'), QLatin1Char('/')) + QString("/") + QString("dohome/index.html"));
             }
         } else {
             ui->debugDisplay->append(QString("La reponse indique une erreur"));
@@ -67,7 +67,7 @@ bool Dialog::unzip_update(bool error){
     if(!(error)){
         QStringList arg_del_last_version;
 
-        ui->debugDisplay->append(QString("Telechargement termine"));
+        ui->debugDisplay->append(QString("T√©l√©chargement termin√©"));
 
         zip_out->open(QIODevice::ReadWrite);
         zip_out->write(serveur_dl->readAll());
@@ -84,7 +84,7 @@ bool Dialog::unzip_update(bool error){
 
         return true;
     } else {
-        ui->debugDisplay->append(QString("La mise a jour n'a pas pu Ítre telechargee"));
+        ui->debugDisplay->append(QString("La mise a jour n'a pas pu √™tre t√©l√©charg√©e"));
         
         return false;
     }
@@ -94,7 +94,7 @@ bool Dialog::apply_update(int exit_code){
     if (exit_code == EXIT_SUCCESS){
         QStringList arg_unzip;
 
-        ui->debugDisplay->append(QString("DÈcompression de la mise a jour en cours"));
+        ui->debugDisplay->append(QString("D√©compression de la mise a jour en cours"));
 
         arg_unzip << "-o" << "-u" << "temp/new.zip" << "-d" << "dohome";
         unzip_process->start(QString("unzip.exe"), arg_unzip);
@@ -110,15 +110,15 @@ bool Dialog::apply_update(int exit_code){
 
 bool Dialog::verify_update(int exit_code){
     if (exit_code == EXIT_SUCCESS){
-        ui->debugDisplay->append(QString("DÈcompression terminÈe\nSuppression du fichier comprÈssÈ"));
+        ui->debugDisplay->append(QString("D√©compression termin√©e\nSuppression du fichier compr√©ss√©"));
         if (zip_out->remove()){
-            ui->debugDisplay->append(QString("Mise a jour terminÈe avec succes, lancement de l'application"));
+            ui->debugDisplay->append(QString("Mise a jour termin√©e avec succes, lancement de l'application"));
             ui->debugDisplay->append(QString("Vous avez la derniere version, lancement de l'application : ") + QString("file:///") + application_directory->replace(QLatin1Char('\\'), QLatin1Char('/')) + QString("dohome/index.html"));
-            QDesktopServices::openUrl(QString("file:///") + application_directory->replace(QLatin1Char('\\'), QLatin1Char('/')) + QString("dohome/index.html"));
+            QDesktopServices::openUrl(QString("file:///") + application_directory->replace(QLatin1Char('\\'), QLatin1Char('/')) + QString("/") + QString("dohome/index.html"));
 
             return true;
         } else {
-            ui->debugDisplay->append(QString("Erreur lors de la supression du fichier comprÈssÈ"));
+            ui->debugDisplay->append(QString("Erreur lors de la supression du fichier compr√©ss√©"));
 
             return false;
         }
