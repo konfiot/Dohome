@@ -1,4 +1,5 @@
 #include <EtherCard.h>
+#include "BMP085.h"
 
 #define DEBUG   0   // set to 1 to access the web interface without password
 #define SERIAL  0   // set to 1 to show incoming requests and debug messages on serial port
@@ -28,14 +29,12 @@ char pc_nom[][40] PROGMEM  = {"Ordinateur Rez-De-Chausse",
 char okHeader[] PROGMEM = 
     "HTTP/1.0 200 OK\r\n"
     "Content-Type: text/html\r\n"
-    "Pragma: no-cache\r\n"
     "Access-Control-Allow-Origin: *\r\n"
 ;
 
 char okHeaderJSON[] PROGMEM = 
     "HTTP/1.0 200 OK\r\n"
     "Content-Type: application/json\r\n"
-    "Pragma: no-cache\r\n"
     "Access-Control-Allow-Origin: *\r\n"
 ;
 
@@ -43,12 +42,14 @@ char okHeaderJSON[] PROGMEM =
 void setup(){
 #if SERIAL
     Serial.begin(57600);
-    Serial.println("\n[etherNode]");
+    Serial.println("\n[Dohome]");
 #endif
+    
+    Wire.begin();
     
     if (ether.begin(sizeof Ethernet::buffer, mymac) == 0){
 #if SERIAL
-      Serial.println( "Failed to access Ethernet controller");
+      Serial.println("Failed to access Ethernet controller");
 #endif
     }
     if (!ether.dhcpSetup()){
@@ -69,6 +70,7 @@ void setup(){
       pinMode(barled_pins[i]+j, OUTPUT);
     }
   }
+  dps.init();
 }
 
 static int getIntArg(const char* data, const char* key, int value =-1) {
@@ -121,6 +123,8 @@ static void homePage(BufferFiller& buf) {
     }
     
     buf.emit_p(PSTR("],"));
+    
+    buf.emit_p(PSTR(""));
     
     unsigned long t = millis() / (unsigned long)1000;
     /*word h = t / 3600;
