@@ -89,16 +89,16 @@
       }
 
       function showLedState(json){
-        for (i in json.led){
-          if (json.led[i].e == "1") {
-            $("#content_leds").html("<button class=\"btn disabled btn-primary\" id=\"label_led_"+ json.led[i].n +"\" onclick=\"modLedState(" + json.led[i].n + ", 0)\"  >Led n° " + json.led[i].n + "</button>");
-            $("#content_leds").append("<button class=\"btn btn-success\" id=\"led_"+ json.led[i].n +"\" onclick=\"modLedState(" + json.led[i].n + ", 0)\">On</button>");
+        for (i in json.l){
+          if (json.l[i].e == "1") {
+            $("#content_leds").html("<button class=\"btn disabled btn-primary\" id=\"label_led_"+ json.l[i].n +"\" onclick=\"modLedState(" + json.l[i].n + ", 0)\"  >Led n° " + json.l[i].n + "</button>");
+            $("#content_leds").append("<button class=\"btn btn-success\" id=\"led_"+ json.l[i].n +"\" onclick=\"modLedState(" + json.l[i].n + ", 0)\">On</button>");
           } else {
-            $("#content_leds").html("<button class=\"btn disabled btn-primary\" id=\"label_led_"+ json.led[i].n +"\" onclick=\"modLedState(" + json.led[i].n + ", 1)\"  >Led n° " + json.led[i].n + "</button>");
-            $("#content_leds").append("<button class=\"btn btn-inverse\" id=\"led_"+ json.led[i].n +"\" onclick=\"modLedState(" + json.led[i].n + ", 1)\">Off</button>");
+            $("#content_leds").html("<button class=\"btn disabled btn-primary\" id=\"label_led_"+ json.l[i].n +"\" onclick=\"modLedState(" + json.l[i].n + ", 1)\"  >Led n° " + json.l[i].n + "</button>");
+            $("#content_leds").append("<button class=\"btn btn-inverse\" id=\"led_"+ json.l[i].n +"\" onclick=\"modLedState(" + json.l[i].n + ", 1)\">Off</button>");
           }
 
-          $("#content_leds").append("<button class=\"btn disabled\" id=\"status_led_"+ json.led[i].n +"\"><i class=\"icon-ok\"></i></button>");
+          $("#content_leds").append("<button class=\"btn disabled\" id=\"status_led_"+ json.l[i].n +"\"><i class=\"icon-ok\"></i></button>");
 
           $("#content_leds").wrapInner("<div class=\"btn-group\"></div>");
           $("#content_leds").wrapInner("<div class=\"btn-toolbar\"></div>");
@@ -107,8 +107,8 @@
 
       function showPcState(json){
         $("#content_wol").html('');
-        for (i in json.pc){
-          $("#content_wol").append("<div class=\"btn-toolbar\"></div><div class=\"btn-group\"><button class=\"btn disabled btn-primary\" id=\"label_pc_"+ json.pc[i].n +"\" onclick=\"modPcState(" + json.pc[i].n + ", 0)\">" + json.pc[i].l + "</button><button class=\"btn btn-success\" id=\"pc_"+ json.pc[i].n +"\" onclick=\"modPcState(" + json.pc[i].n + ")\">Wake up !</button><button class=\"btn disabled\" id=\"status_pc_"+ json.pc[i].n +"\"><i class=\"icon-ok\"></i></button></div></div>");
+        for (i in json.p){
+          $("#content_wol").append("<div class=\"btn-toolbar\"></div><div class=\"btn-group\"><button class=\"btn disabled btn-primary\" id=\"label_pc_"+ json.p[i].n +"\" onclick=\"modPcState(" + json.p[i].n + ", 0)\">" + json.p[i].l + "</button><button class=\"btn btn-success\" id=\"pc_"+ json.p[i].n +"\" onclick=\"modPcState(" + json.p[i].n + ")\">Wake up !</button><button class=\"btn disabled\" id=\"status_pc_"+ json.p[i].n +"\"><i class=\"icon-ok\"></i></button></div></div>");
         }
       }
 
@@ -116,36 +116,36 @@
         $("#content_bars").html('');
 
 
-        for (i in json.barled){
+        for (i in json.b){
           if (i == 0){
-            $("#content_bars").append("<button class=\"btn disabled btn-primary\" >Bar n° " + json.barled[i].n + "</button>");
+            $("#content_bars").append("<button class=\"btn disabled btn-primary\" >Bar n° " + json.b[i].n + "</button>");
             
-            for (j = 0 ; j <= json.barled[i].m ; j++){
-              if (j == json.barled[i].v) {
-                $("#content_bars").append("<button class=\"btn btn-success active\" onclick=\"modBarLedState(" + json.barled[i].n + ", " + json.barled[i].v + ", " + j + ")\">"+ j +"</button>");
+            for (j = 0 ; j <= json.b[i].m ; j++){
+              if (j == json.b[i].v) {
+                $("#content_bars").append("<button class=\"btn btn-success active\" onclick=\"modBarLedState(" + json.b[i].n + ", " + json.b[i].v + ", " + j + ")\">"+ j +"</button>");
               } else {
-                $("#content_bars").append("<button class=\"btn\" onclick=\"modBarLedState(" + json.barled[i].n + ", " + json.barled[i].v + ", " + j + ")\">"+ j +"</button>");
+                $("#content_bars").append("<button class=\"btn\" onclick=\"modBarLedState(" + json.b[i].n + ", " + json.b[i].v + ", " + j + ")\">"+ j +"</button>");
               }
             }
 
             $("#content_bars").append("<a class=\"btn disabled\"><i class=\"icon-ok\"></i></a>");
             
             $("#content_bars")
-              .wrapInner("<div id=\"bar_" + json.barled[i].n + "\" class=\"btn-group\"></div>")
+              .wrapInner("<div id=\"bar_" + json.b[i].n + "\" class=\"btn-group\"></div>")
               .wrapInner("<div class=\"btn-toolbar\"></div>")
-              .append("<div class=\"btn-toolbar\"><div id=\"bar_" + (json.barled[i].n+1) + "\" class=\"btn-group\"></div></div>");
+              .append("<div class=\"btn-toolbar\"><div id=\"bar_" + (json.b[i].n+1) + "\" class=\"btn-group\"></div></div>");
           } else {
-            $("#bar_" +(json.barled[i].n-1)).append("<button class=\"btn disabled btn-primary\" >Bar n° " + json.barled[i].n + "</button>");
+            $("#bar_" +(json.b[i].n-1)).append("<button class=\"btn disabled btn-primary\" >Bar n° " + json.b[i].n + "</button>");
           
-            for (j = 0 ; j <= json.barled[i].m ; j++){
-              if (j == json.barled[i].v) {
-                $("#bar_" +(json.barled[i].n-1)).append("<button class=\"btn btn-success active\" onclick=\"modBarLedState(" + json.barled[i].n + ", " + json.barled[i].v + ", " + j + ")\">"+ j +"</button>");
+            for (j = 0 ; j <= json.b[i].m ; j++){
+              if (j == json.b[i].v) {
+                $("#bar_" +(json.b[i].n-1)).append("<button class=\"btn btn-success active\" onclick=\"modBarLedState(" + json.b[i].n + ", " + json.b[i].v + ", " + j + ")\">"+ j +"</button>");
               } else {
-                $("#bar_" +(json.barled[i].n-1)).append("<button class=\"btn\" onclick=\"modBarLedState(" + json.barled[i].n + ", " + json.barled[i].v + ", " + j + ")\">"+ j +"</button>");
+                $("#bar_" +(json.b[i].n-1)).append("<button class=\"btn\" onclick=\"modBarLedState(" + json.b[i].n + ", " + json.b[i].v + ", " + j + ")\">"+ j +"</button>");
               }
             }
 
-            $("#bar_" +(json.barled[i].n-1)).append("<a class=\"btn disabled\"><i class=\"icon-ok\"></i></a></div></div><div class=\"btn-toolbar\"><div id=\"bar_" + (json.barled[i].n+1) + "\" class=\"btn-group\"></div></div>");
+            $("#bar_" +(json.b[i].n-1)).append("<a class=\"btn disabled\"><i class=\"icon-ok\"></i></a></div></div><div class=\"btn-toolbar\"><div id=\"bar_" + (json.b[i].n+1) + "\" class=\"btn-group\"></div></div>");
           
           }
         }

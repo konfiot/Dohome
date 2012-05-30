@@ -91,7 +91,7 @@ static char* getStrArg(const char* data, const char* key, int value =-1) {
 static void homePage(BufferFiller& buf) {
     buf.emit_p(PSTR("$F\r\n"
         "{"
-        "\"led\":["), okHeaderJSON);
+        "\"l\":["), okHeaderJSON);
         
     for (int i = 0 ; i < sizeof(led_pins) ; i++){
       buf.emit_p(PSTR("{\"n\":\"$D\",\"e\":\"$D\"}"), led_pins[i], etaled[led_pins[i]]);
@@ -101,7 +101,7 @@ static void homePage(BufferFiller& buf) {
       }
     }
     
-    buf.emit_p(PSTR("],\"barled\":["));
+    buf.emit_p(PSTR("],\"b\":["));
     
     for (int i = 0 ; i < sizeof(barled_pins) ; i++){
       buf.emit_p(PSTR("{\"n\":\"$D\",\"v\":\"$D\",\"m\":\"$D\"}"), barled_pins[i], etabarled[barled_pins[i]], barled_size[i]);
@@ -111,7 +111,7 @@ static void homePage(BufferFiller& buf) {
       }
     }
     
-    buf.emit_p(PSTR("],\"pc\":["));
+    buf.emit_p(PSTR("],\"p\":["));
     
     for (int i = 0 ; i < (sizeof(pc_nom)/40) ; i++){
       buf.emit_p(PSTR("{\"n\":\"$D\",\"l\":\"$F\"}"), i, pc_nom[i]);
