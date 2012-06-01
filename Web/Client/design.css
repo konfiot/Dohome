@@ -1,0 +1,23 @@
+h1, h2, h3, h4, h5, h6
+{
+	color: white;
+	//background: black;
+	background-image: -webkit-linear-gradient(top, #2C2C2C 0%, #2C2C2C 90%, #f5f5f5 100%);
+	border-top-left-radius: 4px;
+	border-top-right-radius: 4px;
+}
+
+.label_pc
+{
+	width : 185px;
+}
+
+.label_barled
+{
+	width : 80px;
+}
+
+.label_led
+{
+	width : 80px;
+}
