@@ -25,6 +25,7 @@ const byte   led_pins[]    = {13},
            
 char pc_nom[][40] PROGMEM  = {"Ordinateur Rez-De-Chausse",
                              "Ordinateur Bureau"};
+                             
            
 char okHeader[] PROGMEM = 
     "HTTP/1.0 200 OK\r\n"
@@ -38,6 +39,7 @@ char okHeaderJSON[] PROGMEM =
     "Access-Control-Allow-Origin: *\r\n"
 ;
 
+BMP085 pressure_in = BMP085();
            
 void setup(){
 #if SERIAL
@@ -45,6 +47,7 @@ void setup(){
     Serial.println("\n[Dohome]");
 #endif
     
+    pressure_in.init();
     Wire.begin();
     
     if (ether.begin(sizeof Ethernet::buffer, mymac) == 0){
@@ -200,6 +203,7 @@ static void gouvpc(const char* data, BufferFiller& buf) {
 }
 
 void loop(){
+    unsigned int timer = milis();
     word len = ether.packetReceive();
     word pos = ether.packetLoop(len);
     // check if valid tcp data is received
@@ -252,6 +256,10 @@ void loop(){
           ether.sendWol(pc_mac[wol_id]);
           wol_id = -1;
         }
+    } else if ((timer - milis()) >= 1000) {
+        pressure_in.getTemperature();
+        pressure_in.getPressure();
+        
     }
 }
 
