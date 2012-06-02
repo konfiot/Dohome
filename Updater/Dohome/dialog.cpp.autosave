@@ -72,12 +72,14 @@ bool Dialog::unzip_update(bool error){
 
         ui->debugDisplay->append(QString("Suppression de l'ancienne version"));
 
+
+
 #ifdef _WIN32
         del_last_version_process->start(QString("cmd.exe"));
         del_last_version_process->write("rmdir dohome /S /Q\n");
         del_last_version_process->write("exit\n");
 #else
-        del_last_version_process->start(QString("rm"), QStringList() << QString("-r") << QString("dohome"));
+        del_last_version_process->start(QString("rm"),  << QString("-r") << QString("dohome"));
 #endif
 
         QObject::connect(del_last_version_process, SIGNAL(finished(int, QProcess::ExitStatus)), this, SLOT(apply_update(int)));
