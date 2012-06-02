@@ -48,7 +48,13 @@ bool Dialog::search_updates(bool error){
 
                 QObject::connect(serveur_dl, SIGNAL(done(bool)), this, SLOT(unzip_update(bool)));
             } else {
+                ui->debugDisplay->append(QString("Vous avez la derniere version, lancement de l'application"));
+#ifdef _WIN32
                 QDesktopServices::openUrl(QString("file:///") + QString(application_directory->replace(QLatin1Char('\\'), QLatin1Char('/'))).replace(QString("Dohome.exe"), QString("")) + QString("/") + QString("dohome/index.html"));
+#else
+                application_directory->chop(6);
+                QDesktopServices::openUrl(QString("file:///") + QString(*application_directory) + QString("dohome/index.html"));
+#endif
             }
         } else {
             ui->debugDisplay->append(QString("La reponse indique une erreur"));
@@ -116,7 +122,12 @@ bool Dialog::verify_update(int exit_code){
         ui->debugDisplay->append(QString("Décompression terminée\nSuppression du fichier compréssé"));
         if (zip_out->remove()){
             ui->debugDisplay->append(QString("Mise a jour terminée avec succes, lancement de l'application"));
+#ifdef _WIN32
             QDesktopServices::openUrl(QString("file:///") + QString(application_directory->replace(QLatin1Char('\\'), QLatin1Char('/'))).replace(QString("Dohome.exe"), QString("")) + QString("/") + QString("dohome/index.html"));
+#else
+            application_directory->chop(6);
+            QDesktopServices::openUrl(QString("file:///") + QString(*application_directory) + QString("dohome/index.html"));
+#endif
 
             return true;
         } else {
