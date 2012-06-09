@@ -1,5 +1,8 @@
 #include <EtherCard.h>
-#include "BMP085.h"
+#include <Wire.h>
+#include "piece.h"
+#include "sensor.h"
+#include "bmp085_sensor.h"
 
 #define DEBUG   0   // set to 1 to access the web interface without password
 #define SERIAL  0   // set to 1 to show incoming requests and debug messages on serial port
@@ -38,17 +41,12 @@ char okHeaderJSON[] PROGMEM =
     "Content-Type: application/json\r\n"
     "Access-Control-Allow-Origin: *\r\n"
 ;
-
-BMP085 pressure_in = BMP085();
            
 void setup(){
 #if SERIAL
     Serial.begin(57600);
     Serial.println("\n[Dohome]");
 #endif
-    
-    pressure_in.init();
-    Wire.begin();
     
     if (ether.begin(sizeof Ethernet::buffer, mymac) == 0){
 #if SERIAL
@@ -73,7 +71,9 @@ void setup(){
       pinMode(barled_pins[i]+j, OUTPUT);
     }
   }
-  dps.init();
+  
+  Wire.begin();
+  
 }
 
 static int getIntArg(const char* data, const char* key, int value =-1) {
@@ -203,7 +203,7 @@ static void gouvpc(const char* data, BufferFiller& buf) {
 }
 
 void loop(){
-    unsigned int timer = milis();
+    unsigned int timer = millis();
     word len = ether.packetReceive();
     word pos = ether.packetLoop(len);
     // check if valid tcp data is received
@@ -256,9 +256,7 @@ void loop(){
           ether.sendWol(pc_mac[wol_id]);
           wol_id = -1;
         }
-    } else if ((timer - milis()) >= 1000) {
-        pressure_in.getTemperature();
-        pressure_in.getPressure();
+    } else if ((timer - millis()) >= 1000) {
         
     }
 }

@@ -15,3 +15,10 @@ bool Piece::fillJSONData(BufferFiller &buf){
     buf.emit_p(PSTR("LAULLE"));
     return true;
 }
+
+Piece::~Piece(){
+	for (int i = 0 ; i < _sensors.size() ; i++){
+		delete _sensors[i];
+		_sensors[i] = 0;
+	}
+}

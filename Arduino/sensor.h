@@ -9,11 +9,10 @@ public:
 
                     Sensor      (const char *name   );
     virtual bool    refresh     (                   ) = 0;
-    virtual double  get_data    (                   );
+    virtual String  getJSONData (                   ) = 0;
 private:
 
     String          _name;
-    double          _data;
 };
 
 #endif // SENSOR_H

@@ -3,7 +3,6 @@
 
 #include <Arduino.h>
 #include <EtherCard.h>
-#include <iostream>
 #include "sensor.h"
 
 class Piece
@@ -11,13 +10,13 @@ class Piece
 public:
 
                     Piece           (String         name    );
-    bool            addSensor       (Sensor         sensor  );
+    bool            addSensor       (Sensor         &sensor );
     bool            fillJSONData    (BufferFiller   &buf    );
+                    ~Piece          (                       );
 
 private:
-
-    vector<Sensor*> _sensors;
-    String          _name;
+    std::vector<Sensor*> _sensors
+    String               _name;
 };
 
 #endif // PIECE_H
