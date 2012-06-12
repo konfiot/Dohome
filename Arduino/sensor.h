@@ -6,12 +6,12 @@
 class Sensor
 {
 public:
-
                     Sensor      (const char *name   );
+    virtual bool    init        (                   ) = 0;
     virtual bool    refresh     (                   ) = 0;
     virtual String  getJSONData (                   ) = 0;
-private:
 
+protected:
     String          _name;
 };
 

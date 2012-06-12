@@ -5,12 +5,16 @@
 #include "bmp085_sensor.h"
 
 #define DEBUG   0   // set to 1 to access the web interface without password
-#define SERIAL  0   // set to 1 to show incoming requests and debug messages on serial port
+#define SERIAL  1   // set to 1 to show incoming requests and debug messages on serial port
+
+BMP085_Sensor pression_in("Interieur");
+Piece rdc("RDC");
+
 
 int wol_id = -1;
 
 // ethernet interface mac address - must be unique on your network
-static byte mymac[] = { 0x74,0x69,0x69,0x2D,0x30,0x31 };
+static byte mymac[] = { 0x74,0x42,0x13,0x37,0x30,0x31 };
 
 static BufferFiller bfill;  // used as cursor while filling the buffer
 
@@ -27,7 +31,7 @@ const byte   led_pins[]    = {13},
              barled_size[] = {10, 20};
            
 char pc_nom[][40] PROGMEM  = {"Ordinateur Rez-De-Chausse",
-                             "Ordinateur Bureau"};
+                              "Ordinateur Bureau"};
                              
            
 char okHeader[] PROGMEM = 
@@ -43,9 +47,11 @@ char okHeaderJSON[] PROGMEM =
 ;
            
 void setup(){
+    Wire.begin();
+    //Serial.println("debut Setup");
 #if SERIAL
     Serial.begin(57600);
-    Serial.println("\n[Dohome]");
+    Serial.println("[Dohome]");
 #endif
     
     if (ether.begin(sizeof Ethernet::buffer, mymac) == 0){
@@ -62,6 +68,8 @@ void setup(){
     ether.printIp("IP: ", ether.myip);
 #endif
 
+  Serial.println("Milieu setup");
+
   for (int i = 0 ; i < sizeof(led_pins) ; i++){
     pinMode(led_pins[i], OUTPUT);
   }
@@ -72,8 +80,11 @@ void setup(){
     }
   }
   
-  Wire.begin();
-  
+  pression_in.init();
+  pression_in.refresh(); 
+  rdc.addSensor(pression_in);
+  rdc.fillJSONData();
+  Serial.println("Fin setup");
 }
 
 static int getIntArg(const char* data, const char* key, int value =-1) {

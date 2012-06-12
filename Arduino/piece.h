@@ -15,7 +15,7 @@ public:
                     ~Piece          (                       );
 
 private:
-    std::vector<Sensor*> _sensors
+    //std::vector<Sensor*> _sensors
     String               _name;
 };
 
