@@ -4,7 +4,7 @@
 #include "sensor.h"
 #include "bmp085_sensor.h"
 
-#define DEBUG   0   // set to 1 to access the web interface without password
+#define DEBUG   1   // set to 1 to access the web interface without password
 #define SERIAL  1   // set to 1 to show incoming requests and debug messages on serial port
 
 BMP085_Sensor pression_in("Interieur");
@@ -48,7 +48,6 @@ char okHeaderJSON[] PROGMEM =
            
 void setup(){
     Wire.begin();
-    //Serial.println("debut Setup");
 #if SERIAL
     Serial.begin(57600);
     Serial.println("[Dohome]");
@@ -68,8 +67,6 @@ void setup(){
     ether.printIp("IP: ", ether.myip);
 #endif
 
-  Serial.println("Milieu setup");
-
   for (int i = 0 ; i < sizeof(led_pins) ; i++){
     pinMode(led_pins[i], OUTPUT);
   }
@@ -81,10 +78,9 @@ void setup(){
   }
   
   pression_in.init();
-  pression_in.refresh(); 
   rdc.addSensor(pression_in);
-  rdc.fillJSONData();
-  Serial.println("Fin setup");
+  rdc.refresh();
+  //rdc.fillJSONData();
 }
 
 static int getIntArg(const char* data, const char* key, int value =-1) {

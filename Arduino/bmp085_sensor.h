@@ -10,7 +10,7 @@ public:
                     BMP085_Sensor   (const char *name   );
     virtual bool    init            (                   );                
     virtual bool    refresh         (                   );
-    virtual String  getJSONData     (                   );
+    virtual char*   getJSONData     (                   );
 
 private:
     BMP085          _dps;
