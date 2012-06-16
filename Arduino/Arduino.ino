@@ -80,7 +80,6 @@ void setup(){
   pression_in.init();
   rdc.addSensor(pression_in);
   rdc.refresh();
-  //rdc.fillJSONData();
 }
 
 static int getIntArg(const char* data, const char* key, int value =-1) {
@@ -132,16 +131,13 @@ static void homePage(BufferFiller& buf) {
       }
     }
     
-    buf.emit_p(PSTR("],"));
+    buf.emit_p(PSTR("],\"c\":["));
     
-    buf.emit_p(PSTR(""));
+    rdc.fillJSONData(buf);
     
     unsigned long t = millis() / (unsigned long)1000;
-    /*word h = t / 3600;
-    byte m = (t / 60) % 60;
-    byte s = t % 60;*/
     buf.emit_p(PSTR(
-        "\"up\":\"$D\"}"), t);
+        "],\"up\":\"$D\"}"), t);
 }
 
 static void gouvled(const char* data, BufferFiller& buf) {
@@ -264,7 +260,7 @@ void loop(){
           wol_id = -1;
         }
     } else if ((timer - millis()) >= 1000) {
-        
+        rdc.refresh();
     }
 }
 

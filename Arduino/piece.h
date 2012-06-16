@@ -11,6 +11,7 @@ class Piece
 public:
 
                     Piece           (String         name    );
+    bool            init            (                       );
     bool            addSensor       (Sensor         &sensor );
     bool            fillJSONData    (BufferFiller   &buf    );
     bool            refresh         (                       );

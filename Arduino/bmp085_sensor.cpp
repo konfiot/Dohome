@@ -16,6 +16,6 @@ bool BMP085_Sensor::refresh() {
 
 char* BMP085_Sensor::getJSONData(){
     char buffer[100];
-    String(String("[\"p\":\"") + String(_pressure) + String("\",\"t\":") + String(_temperature) + String("\",\"n\":") + String(_name) + String("\"]")).toCharArray(buffer, 100);
+    String(String("{\"p\":\"") + String(_pressure) + String("\",\"t\":\"") + String(_temperature) + String("\",\"n\":\"") + String(_name) + String("\"}")).toCharArray(buffer, 100);
     return buffer;
 }
