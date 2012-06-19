@@ -1,9 +1,7 @@
-var sliding = false, rip = false;
+var sliding = false, allow_refresh = false;
 
 function getXDomainRequest() {
   var xdr = null;
-  
-  rip = true;
 
   if (window.XDomainRequest) {
     xdr = new XDomainRequest(); 
@@ -21,7 +19,7 @@ function GetData(addr, callbackok, callbackerr, callbackfail, callbackprogress) 
   var xdr = getXDomainRequest();
   xdr.timeout = 5000;
   xdr.onload = function(){
-    rip = false;
+    
     if (xdr.readyState == 4 && xdr.status == 200) {
       callbackok(xdr.responseText)
     } else {
@@ -29,7 +27,7 @@ function GetData(addr, callbackok, callbackerr, callbackfail, callbackprogress) 
     }
   };
   xdr.onerror = function(){
-    rip = false;
+    
     callbackfail();
   }
   xdr.onprogress = callbackprogress;
@@ -42,7 +40,7 @@ function modLedState(no, etat){
   xdr.open("GET", "http://"+ domain + ":" + port + "/l?n="+no+"&e="+((etat) ? 1 : 0)+"&m="+mdp);
   xdr.send();
   xdr.onload = function(){
-    rip = false;
+    
   };
 }
 
@@ -50,7 +48,7 @@ function modPcState(no){
   $("#status_pc_"+no+" i").attr("class", "icon-refresh");
   var xdr = getXDomainRequest();
   xdr.onload = function(){
-    rip = false;
+    
     if (xdr.responseText == "1"){            
       $("#status_pc_"+no+" i").attr("class", "icon-ok");
     } else {
@@ -64,7 +62,7 @@ function modPcState(no){
 function modBarLedState(no, val){
   var xdr = getXDomainRequest();
   xdr.onload = function(){
-    rip = false;
+    setTimeout(function(){allow_refresh = true;}, 1000);
   };
   xdr.open("GET", "http://"+ domain + ":" + port + "/b?n="+no+"&v="+val+"&m="+mdp);
   xdr.send();
@@ -95,11 +93,12 @@ function showBarLedState(json){
 
   for (i in json.b){
     $("#content_bars").append(json.b[i].n + '<div id="bar_' + json.b[i].n + '"></div>');
-    $("#bar_" + json.b[i].n).jqxSlider({ min: 0, max: json.b[i].m, ticksFrequency: 1, step: 1, theme: 'classic', mode: "fixed" });
+    $("#bar_" + json.b[i].n).jqxSlider({ min: 0, max: json.b[i].m, ticksFrequency: 1, step: 1, value: 0, theme: 'classic', mode: "fixed" });
     $("#bar_" + json.b[i].n).jqxSlider('setValue', json.b[i].v * 1);
 
     $("#bar_" + json.b[i].n).bind('change', function(event){
       if (!(sliding)){
+        allow_refresh = false;
         modBarLedState(event.target.id.split('_')[1], event.args.value);
       }
     });
@@ -109,14 +108,16 @@ function showBarLedState(json){
     });
 
     $("#bar_" + json.b[i].n).bind('slideEnd', function(event){
+      allow_refresh = false;
       sliding = false;
       modBarLedState(event.target.id.split('_')[1], event.args.value);
+
     });
   }
 }
 
 function refreshBarLedState(json){
-  if((!(sliding)) && (!(rip))){
+  if((!(sliding)) && (allow_refresh)){
     for (i in json.b){
       if(($("#bar_" + json.b[i].n).jqxSlider('getValue')) != (json.b[i].v * 1)){
         $("#bar_" + json.b[i].n).jqxSlider('setValue', json.b[i].v * 1);
