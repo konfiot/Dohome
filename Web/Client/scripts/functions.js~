@@ -75,7 +75,7 @@ function showLedState(json){
 	$("#content_leds").append('<div id="content_led_' + json.l[i].n + '"></div>');
     $("#content_led_" + json.l[i].n).append('<th>' + json.l[i].n + '</th><td><div id="button_' + json.l[i].n + '" class="actuator"></div></td>');
     $("#content_led_" + json.l[i].n).wrapInner('<table class="sensor_table"><tr></tr></table>');
-    $('#button_' + json.l[i].n).jqxSwitchButton({ height: 27, width: 81, theme: 'classic', checked: (json.l[i].e == "1") ? true : false});
+    $('#button_' + json.l[i].n).jqxSwitchButton({ height: 21, width: 81, theme: 'classic', checked: (json.l[i].e == "1") ? true : false});
     $('#button_' + json.l[i].n).bind('change', function(event){
       modLedState(event.target.id.split('_')[1], event.args.check);
     });

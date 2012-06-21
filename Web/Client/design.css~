@@ -15,8 +15,3 @@ table.sensor_table tr td
 {
 	width: 100%;
 }
-
-.actuator
-{
-	float: right;
-}
