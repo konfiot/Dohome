@@ -3,9 +3,7 @@
 #include "piece.h"
 #include "sensor.h"
 #include "bmp085_sensor.h"
-
-#define DEBUG   1   // set to 1 to access the web interface without password
-#define SERIAL  1   // set to 1 to show incoming requests and debug messages on serial port
+#include "defines.h"
 
 BMP085_Sensor pression_in("Interieur");
 Piece rdc("RDC");
@@ -77,8 +75,8 @@ void setup(){
     }
   }
   
-  pression_in.init();
   rdc.addSensor(pression_in);
+  rdc.init();
   rdc.refresh();
 }
 
@@ -215,11 +213,11 @@ void loop(){
         char* data = (char *) Ethernet::buffer + pos;
 #if SERIAL
         Serial.println(data);
-        Serial.println("arg : '");
+        Serial.println("arg : ");
 #endif
 #if !(DEBUG)
          if ((data[6] == '?') && (getStrArg(data, "m") != NULL)){
-          if (strcmp(getStrArg(data, "m"), "weNWsOAoNa91AHYspUQ2pStOyOSvSmQSL1yrsif5qEeRZAkKwfbxhUt21X6gMCZtAsRExPqpFIz3wU72Mb3QoS865xJ9gSoUE6WJYWrYvPL35T0MjxV") == 0){
+          if (strcmp(getStrArg(data, "m"), PASSWORD) == 0){
 #endif
             if (strncmp("GET /h", data, 6) == 0)
                 homePage(bfill);
@@ -232,7 +230,6 @@ void loop(){
             else
                 bfill.emit_p(PSTR(
                     "HTTP/1.0 404 Not Found\r\n"
-                    "Content-Type: text/html\r\n"
                     "Access-Control-Allow-Origin: *\r\n"
                     "\r\n"
                     "<h1>404 Not Found</h1> fallait utiliser mon interface intuitive qui roxxe du poney rose a moustache"));
@@ -240,7 +237,6 @@ void loop(){
           } else {
             bfill.emit_p(PSTR(
                 "HTTP/1.0 403 Forbidden\r\n"
-                "Content-Type: text/html\r\n"
                 "Access-Control-Allow-Origin: *\r\n"
                 "\r\n"
                 "<h1>403 Forbidden</h1> Rentre le bon mot de passe connard"));
@@ -248,7 +244,6 @@ void loop(){
         } else {
           bfill.emit_p(PSTR(
               "HTTP/1.0 401 Authorization Required\r\n"
-              "Content-Type: text/html\r\n"
               "Access-Control-Allow-Origin: *\r\n"
               "\r\n"
               "<h1>401 Authorization Required</h1> T'as cru que mon serveur of the dead il etait pas securise, tu m'a pris pour un noob ou quoi ?"));

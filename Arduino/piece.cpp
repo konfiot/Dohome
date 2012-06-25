@@ -24,7 +24,7 @@ bool Piece::fillJSONData(BufferFiller &buf){
       buf.emit_p(PSTR("{\"n\":\"$S\",\"s\":["), name_buf);
       
       for (int i = 0 ; i < _sensors.size() ; i++){
-        buf.emit_p(PSTR("$S"), _sensors[i]->getJSONData());
+        _sensors[i]->getJSONData(buf);
       }
       
       buf.emit_p(PSTR("]}"));
