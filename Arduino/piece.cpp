@@ -1,9 +1,8 @@
 #include <EtherCard.h>
 #include "piece.h"
 
-Piece::Piece(String name)
+Piece::Piece(const char *name) : _name(name)
 {
-    _name = name;
 }
 
 bool Piece::init(){
@@ -17,11 +16,8 @@ bool Piece::addSensor(Sensor &sensor){
     return true;
 }
 
-bool Piece::fillJSONData(BufferFiller &buf){
-      char *name_buf = (char*)malloc((_name.length()+1) * sizeof(char));
-      _name.toCharArray(name_buf, (_name.length()+1) * sizeof(char));
-      
-      buf.emit_p(PSTR("{\"n\":\"$S\",\"s\":["), name_buf);
+bool Piece::fillJSONData(BufferFiller &buf){      
+      buf.emit_p(PSTR("{\"n\":\"$S\",\"s\":["), _name);
       
       for (int i = 0 ; i < _sensors.size() ; i++){
         _sensors[i]->getJSONData(buf);

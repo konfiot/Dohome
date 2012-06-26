@@ -34,7 +34,6 @@ char pc_nom[][40] PROGMEM  = {"Ordinateur Rez-De-Chausse",
            
 char okHeader[] PROGMEM = 
     "HTTP/1.0 200 OK\r\n"
-    "Content-Type: text/html\r\n"
     "Access-Control-Allow-Origin: *\r\n"
 ;
 
@@ -135,7 +134,7 @@ static void homePage(BufferFiller& buf) {
     
     unsigned long t = millis() / (unsigned long)1000;
     buf.emit_p(PSTR(
-        "],\"up\":\"$D\"}"), t);
+        "],\"up\":\"$L\"}"), t);
 }
 
 static void gouvled(const char* data, BufferFiller& buf) {
@@ -231,29 +230,28 @@ void loop(){
                 bfill.emit_p(PSTR(
                     "HTTP/1.0 404 Not Found\r\n"
                     "Access-Control-Allow-Origin: *\r\n"
-                    "\r\n"
-                    "<h1>404 Not Found</h1> fallait utiliser mon interface intuitive qui roxxe du poney rose a moustache"));
+                    "\r\n"));
 #if !(DEBUG)
           } else {
             bfill.emit_p(PSTR(
                 "HTTP/1.0 403 Forbidden\r\n"
                 "Access-Control-Allow-Origin: *\r\n"
-                "\r\n"
-                "<h1>403 Forbidden</h1> Rentre le bon mot de passe connard"));
+                "\r\n"));
           }
         } else {
           bfill.emit_p(PSTR(
               "HTTP/1.0 401 Authorization Required\r\n"
               "Access-Control-Allow-Origin: *\r\n"
-              "\r\n"
-              "<h1>401 Authorization Required</h1> T'as cru que mon serveur of the dead il etait pas securise, tu m'a pris pour un noob ou quoi ?"));
+              "\r\n"));
         }
 #endif
         ether.httpServerReply(bfill.position()); // send web page data
+        
         if (wol_id != -1){
           ether.sendWol(pc_mac[wol_id]);
           wol_id = -1;
         }
+        
     } else if ((timer - millis()) >= 1000) {
         rdc.refresh();
     }

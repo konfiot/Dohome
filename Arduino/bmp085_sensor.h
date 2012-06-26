@@ -17,7 +17,7 @@ public:
 private:
     BMP085          _dps;
     long            _temperature;
-    unsigned long            _pressure;
+    long            _pressure;
 
 };
 

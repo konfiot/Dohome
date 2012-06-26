@@ -10,7 +10,7 @@ class Piece
 {
 public:
 
-                    Piece           (String         name    );
+                    Piece           (const char     *name   );
     bool            init            (                       );
     bool            addSensor       (Sensor         &sensor );
     bool            fillJSONData    (BufferFiller   &buf    );
@@ -19,7 +19,7 @@ public:
 
 private:
     Vector<Sensor*> _sensors;
-    String          _name;
+    const char*     _name;
 };
 
 #endif // PIECE_H
