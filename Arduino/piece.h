@@ -4,22 +4,28 @@
 #include <Arduino.h>
 #include <EtherCard.h>
 #include "sensor.h"
+#include "actuator.h"
 #include "vector.h"
 
 class Piece
 {
 public:
 
-                    Piece           (const char     *name   );
-    bool            init            (                       );
-    bool            addSensor       (Sensor         &sensor );
-    bool            fillJSONData    (BufferFiller   &buf    );
-    bool            refresh         (                       );
-                    ~Piece          (                       );
+                      Piece           (const char     *name    );
+    bool              init            (byte           id       );
+    bool              addSensor       (Sensor         &sensor  );
+    bool              addActuator     (Actuator       &Actuator);
+    bool              fillJSONData    (BufferFiller   &buf     );
+    bool              refresh         (                        );
+    virtual bool      prepare         (const char     *arg     );
+    virtual bool      exec            (                        );
+                      ~Piece          (                        );
 
 private:
-    Vector<Sensor*> _sensors;
-    const char*     _name;
+    Vector<Sensor*>   _sensors;
+    Vector<Actuator*> _actuators;
+    const char*       _name;
+    byte              _id;
 };
 
 #endif // PIECE_H

@@ -2,10 +2,12 @@
 #include <Wire.h>
 #include "piece.h"
 #include "sensor.h"
+#include "led_actuator.h"
 #include "bmp085_sensor.h"
 #include "defines.h"
 
 BMP085_Sensor pression_in("Interieur");
+Led_Actuator led13("13", 13);
 Piece rdc("RDC");
 
 
@@ -18,7 +20,7 @@ static BufferFiller bfill;  // used as cursor while filling the buffer
 
 byte Ethernet::buffer[1000];   // tcp/ip send and receive buffer
 
-bool         etaled[54]    = {0};
+/*bool         etaled[54]    = {0};
 
 byte         etabarled[54] = {0},
              pc_mac[][6]   = {{0x00,0x24,0x1D,0xE9,0x27,0xAA},
@@ -29,7 +31,7 @@ const byte   led_pins[]    = {13},
              barled_size[] = {10, 20};
            
 char pc_nom[][40] PROGMEM  = {"Ordinateur Rez-De-Chausse",
-                              "Ordinateur Bureau"};
+                              "Ordinateur Bureau"};*/
                              
            
 char okHeader[] PROGMEM = 
@@ -64,7 +66,7 @@ void setup(){
     ether.printIp("IP: ", ether.myip);
 #endif
 
-  for (int i = 0 ; i < sizeof(led_pins) ; i++){
+/*  for (int i = 0 ; i < sizeof(led_pins) ; i++){
     pinMode(led_pins[i], OUTPUT);
   }
   
@@ -72,10 +74,11 @@ void setup(){
     for (int j = 0 ; j < barled_size[i] ; j++){
       pinMode(barled_pins[i]+j, OUTPUT);
     }
-  }
+  }*/
   
   rdc.addSensor(pression_in);
-  rdc.init();
+  rdc.addActuator(led13);
+  rdc.init(1);
   rdc.refresh();
 }
 
@@ -98,10 +101,10 @@ static char* getStrArg(const char* data, const char* key, int value =-1) {
 
 static void homePage(BufferFiller& buf) {
     buf.emit_p(PSTR("$F\r\n"
-        "{"
-        "\"l\":["), okHeaderJSON);
+        /*"{"
+        "\"l\":["*/), okHeaderJSON);
         
-    for (int i = 0 ; i < sizeof(led_pins) ; i++){
+/*    for (int i = 0 ; i < sizeof(led_pins) ; i++){
       buf.emit_p(PSTR("{\"n\":\"$D\",\"e\":\"$D\"}"), led_pins[i], etaled[led_pins[i]]);
       
       if((sizeof(led_pins) -i) > 1){
@@ -128,16 +131,16 @@ static void homePage(BufferFiller& buf) {
       }
     }
     
-    buf.emit_p(PSTR("],\"c\":["));
+    buf.emit_p(PSTR("],\"c\":["));*/
     
     rdc.fillJSONData(buf);
     
-    unsigned long t = millis() / (unsigned long)1000;
+/*    unsigned long t = millis() / (unsigned long)1000;
     buf.emit_p(PSTR(
-        "],\"up\":\"$L\"}"), t);
+        "],\"up\":\"$L\"}"), t);*/
 }
 
-static void gouvled(const char* data, BufferFiller& buf) {
+/*static void gouvled(const char* data, BufferFiller& buf) {
   if (data[6] == '?'){
     byte no = getIntArg(data, "n");
     bool etat = getIntArg(data, "e", 0);
@@ -200,7 +203,7 @@ static void gouvpc(const char* data, BufferFiller& buf) {
   } else {
     buf.emit_p(PSTR("$F\r\n0"), okHeader);
   }
-}
+}*/
 
 void loop(){
     unsigned int timer = millis();
@@ -220,12 +223,12 @@ void loop(){
 #endif
             if (strncmp("GET /h", data, 6) == 0)
                 homePage(bfill);
-            else if (strncmp("GET /l", data, 6) == 0)
+/*            else if (strncmp("GET /l", data, 6) == 0)
                 gouvled(data, bfill);
             else if (strncmp("GET /b", data, 6) == 0)
                 gouvbarled(data, bfill);
             else if (strncmp("GET /o", data, 6) == 0)
-                gouvpc(data, bfill);
+                gouvpc(data, bfill);*/
             else
                 bfill.emit_p(PSTR(
                     "HTTP/1.0 404 Not Found\r\n"
@@ -247,10 +250,10 @@ void loop(){
 #endif
         ether.httpServerReply(bfill.position()); // send web page data
         
-        if (wol_id != -1){
+/*        if (wol_id != -1){
           ether.sendWol(pc_mac[wol_id]);
           wol_id = -1;
-        }
+        }*/
         
     } else if ((timer - millis()) >= 1000) {
         rdc.refresh();
