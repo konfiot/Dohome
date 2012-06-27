@@ -27,7 +27,7 @@ bool Piece::addActuator(Actuator &actuator){
 }
 
 bool Piece::fillJSONData(BufferFiller &buf){      
-      buf.emit_p(PSTR("{\"n\":\"$S\",\"i\":\"$D\"\"s\":["), _name, _id);
+      buf.emit_p(PSTR("{\"n\":\"$S\",\"i\":$D,\"s\":["), _name, _id);
       
       for (int i = 0 ; i < _sensors.size() ; i++){
         _sensors[i]->getJSONData(buf);
@@ -48,18 +48,13 @@ bool Piece::refresh(){
     return true;  
 }
 
-bool Piece::prepare(const char *arg){
-    for (int i = 0 ; i < _actuators.size() ; i++){
-      _actuators[i]->prepare(arg);
-    }
-    return true;  
+bool Piece::prepare(const char *arg, byte id){
+    _prepared_id = id;
+    return _actuators[id]->prepare(arg);  
 }
 
 bool Piece::exec(){
-    for (int i = 0 ; i < _actuators.size() ; i++){
-      _actuators[i]->exec();
-    }
-    return true;  
+    return _actuators[_prepared_id]->exec();  
 }
 
 Piece::~Piece(){

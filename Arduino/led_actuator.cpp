@@ -29,6 +29,6 @@ bool Led_Actuator::exec(){
 }
 
 bool Led_Actuator::getJSONData(BufferFiller &buf){
-    buf.emit_p(PSTR("{\"v\":\"$D\",\"i\":\"$D\",\"n\":\"$S\"}"), _val, _id, _name);
+    buf.emit_p(PSTR("{\"v\":$D,\"i\":$D,\"n\":\"$S\"}"), _val, _id, _name);
     return true;
 }

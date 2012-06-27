@@ -135,10 +135,9 @@ static void homePage(BufferFiller& buf) {
     
     rdc.fillJSONData(buf);
     
-/*    unsigned long t = millis() / (unsigned long)1000;
+    unsigned long t = millis() / (unsigned long)1000;
     buf.emit_p(PSTR(
-        "],\"up\":\"$L\"}"), t);*/
-}
+        ",\"up\":$L}"), t);}
 
 /*static void gouvled(const char* data, BufferFiller& buf) {
   if (data[6] == '?'){

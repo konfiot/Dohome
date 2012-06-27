@@ -17,7 +17,7 @@ public:
     bool              addActuator     (Actuator       &Actuator);
     bool              fillJSONData    (BufferFiller   &buf     );
     bool              refresh         (                        );
-    virtual bool      prepare         (const char     *arg     );
+    virtual bool      prepare         (const char     *arg     , byte id);
     virtual bool      exec            (                        );
                       ~Piece          (                        );
 
@@ -26,6 +26,7 @@ private:
     Vector<Actuator*> _actuators;
     const char*       _name;
     byte              _id;
+    byte              _prepared_id;
 };
 
 #endif // PIECE_H
