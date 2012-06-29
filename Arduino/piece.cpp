@@ -42,7 +42,7 @@ bool Piece::fillJSONData(BufferFiller &buf){
 }
 
 bool Piece::refresh(){
-    for (int i = 0 ; i < _sensors.size() ; i++){
+    for (byte i = 0 ; i < _sensors.size() ; i++){
       _sensors[i]->refresh();
     }
     return true;  
@@ -60,6 +60,10 @@ bool Piece::exec(){
 Piece::~Piece(){
 	for (int i = 0 ; i < _sensors.size() ; i++){
 		delete _sensors[i];
-		_sensors[i] = 0;
+		_sensors[i] = NULL;
+	}
+	for (int i = 0 ; i < _actuators.size() ; i++){
+		delete _actuators[i];
+		_actuators[i] = NULL;
 	}
 }

@@ -5,13 +5,15 @@
 #include "led_actuator.h"
 #include "bmp085_sensor.h"
 #include "defines.h"
+#include "home.h"
 
 BMP085_Sensor pression_in("Interieur");
 Led_Actuator led13("13", 13);
 Piece rdc("RDC");
+Home maison("Toussaint");
 
+bool prepared = false;
 
-int wol_id = -1;
 
 // ethernet interface mac address - must be unique on your network
 static byte mymac[] = { 0x74,0x42,0x13,0x37,0x30,0x31 };
@@ -78,8 +80,7 @@ void setup(){
   
   rdc.addSensor(pression_in);
   rdc.addActuator(led13);
-  rdc.init(1);
-  rdc.refresh();
+  maison.addPiece(rdc);
 }
 
 static int getIntArg(const char* data, const char* key, int value =-1) {
@@ -90,7 +91,7 @@ static int getIntArg(const char* data, const char* key, int value =-1) {
 }
 
 
-static char* getStrArg(const char* data, const char* key, int value =-1) {
+static char* getStrArg(const char* data, const char* key) {
     char temp[120];
     if (ether.findKeyVal(data + 7, temp, sizeof temp, key) > 0)
       return temp;
@@ -101,8 +102,8 @@ static char* getStrArg(const char* data, const char* key, int value =-1) {
 
 static void homePage(BufferFiller& buf) {
     buf.emit_p(PSTR("$F\r\n"
-        /*"{"
-        "\"l\":["*/), okHeaderJSON);
+        "{"
+        /*"\"l\":["*/), okHeaderJSON);
         
 /*    for (int i = 0 ; i < sizeof(led_pins) ; i++){
       buf.emit_p(PSTR("{\"n\":\"$D\",\"e\":\"$D\"}"), led_pins[i], etaled[led_pins[i]]);
@@ -133,25 +134,20 @@ static void homePage(BufferFiller& buf) {
     
     buf.emit_p(PSTR("],\"c\":["));*/
     
-    rdc.fillJSONData(buf);
+    maison.fillJSONData(buf);
     
     unsigned long t = millis() / (unsigned long)1000;
     buf.emit_p(PSTR(
         ",\"up\":$L}"), t);}
 
-/*static void gouvled(const char* data, BufferFiller& buf) {
+static void gouvact(const char* data, BufferFiller& buf) {
   if (data[6] == '?'){
-    byte no = getIntArg(data, "n");
-    bool etat = getIntArg(data, "e", 0);
+    byte id_p = getIntArg(data, "p", 255);
+    byte id_a = getIntArg(data, "a", 255);
+    char *arg = getStrArg(data, "c");
     
-    if (memchr(led_pins, no, sizeof(led_pins)) != NULL){
-      if (etat){
-        etaled[no] = true;
-        digitalWrite(no, HIGH);
-      } else {
-        etaled[no] = false;
-        digitalWrite(no, LOW);
-      }
+    if (maison.prepare(arg, id_p, id_a)){
+      prepared = true;
       buf.emit_p(PSTR("$F\r\n1"), okHeader);
     } else {
       buf.emit_p(PSTR("$F\r\n0"), okHeader);
@@ -161,7 +157,7 @@ static void homePage(BufferFiller& buf) {
   }
 }
 
-static void gouvbarled(const char* data, BufferFiller& buf) {
+/*static void gouvbarled(const char* data, BufferFiller& buf) {
   byte *indice;
   if (data[6] == '?'){
     byte no = getIntArg(data, "n");
@@ -214,7 +210,6 @@ void loop(){
         char* data = (char *) Ethernet::buffer + pos;
 #if SERIAL
         Serial.println(data);
-        Serial.println("arg : ");
 #endif
 #if !(DEBUG)
          if ((data[6] == '?') && (getStrArg(data, "m") != NULL)){
@@ -222,9 +217,9 @@ void loop(){
 #endif
             if (strncmp("GET /h", data, 6) == 0)
                 homePage(bfill);
-/*            else if (strncmp("GET /l", data, 6) == 0)
-                gouvled(data, bfill);
-            else if (strncmp("GET /b", data, 6) == 0)
+            else if (strncmp("GET /a", data, 6) == 0)
+                gouvact(data, bfill);
+/*            else if (strncmp("GET /b", data, 6) == 0)
                 gouvbarled(data, bfill);
             else if (strncmp("GET /o", data, 6) == 0)
                 gouvpc(data, bfill);*/
@@ -249,10 +244,10 @@ void loop(){
 #endif
         ether.httpServerReply(bfill.position()); // send web page data
         
-/*        if (wol_id != -1){
-          ether.sendWol(pc_mac[wol_id]);
-          wol_id = -1;
-        }*/
+        if (prepared){
+          maison.exec();
+          prepared = false;
+        }
         
     } else if ((timer - millis()) >= 1000) {
         rdc.refresh();

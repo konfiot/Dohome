@@ -15,6 +15,6 @@ bool BMP085_Sensor::refresh() {
 }
 
 bool BMP085_Sensor::getJSONData(BufferFiller &buf){
-    buf.emit_p(PSTR("{\"p\":$L,\"t\":$D,\"n\":\"$S\"}"), _pressure, int(_temperature), _name);
+    buf.emit_p(PSTR("{\"t\":\"p\",\"v\":$L},{\"v\":$D,\"t\":\"t\"}"), _pressure, int(_temperature));
     return true;
 }

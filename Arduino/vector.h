@@ -1,3 +1,7 @@
+#ifndef VECTOR_H
+#define VECTOR_H
+
+#include <Arduino.h>
 // Minimal class to replace std::vector
 template<typename Data>
 class Vector {
@@ -15,4 +19,6 @@ class Vector {
      Data &operator[](size_t idx) { return d_data[idx]; }; // Changeable getter
    private:
      void resize() { d_capacity = d_capacity ? d_capacity*2 : 1; Data *newdata = (Data *)malloc(d_capacity*sizeof(Data)); memcpy(newdata, d_data, d_size * sizeof(Data)); free(d_data); d_data = newdata; };// Allocates double the old space
-}; 
+};
+
+#endif // VECTOR_H
