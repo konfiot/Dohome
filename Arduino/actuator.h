@@ -9,6 +9,7 @@ class Actuator
 public:
                     Actuator    (const char   *name);
     virtual bool    init        (byte         id   );
+    virtual bool    refresh     (                  ) = 0;
     virtual bool    prepare     (const char   *arg ) = 0;
     virtual bool    exec        (                  ) = 0;
     byte            getId       (                  );

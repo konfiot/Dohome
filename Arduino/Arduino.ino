@@ -2,13 +2,18 @@
 #include <Wire.h>
 #include "piece.h"
 #include "sensor.h"
+#include "actuator.h"
 #include "led_actuator.h"
+#include "pc_actuator.h"
 #include "bmp085_sensor.h"
 #include "defines.h"
 #include "home.h"
 
 BMP085_Sensor pression_in("Interieur");
 Led_Actuator led13("13", 13);
+byte mac[] = {0x00,0x24,0x1D,0xE9,0x27,0xAA};
+byte ip[] = {192,168,0,12};
+PC_Actuator pc("PC", mac, ip);
 Piece rdc("RDC");
 Home maison("Toussaint");
 
@@ -46,6 +51,8 @@ char okHeaderJSON[] PROGMEM =
     "Content-Type: application/json\r\n"
     "Access-Control-Allow-Origin: *\r\n"
 ;
+
+unsigned long timer;
            
 void setup(){
     Wire.begin();
@@ -79,8 +86,11 @@ void setup(){
   }*/
   
   rdc.addSensor(pression_in);
+  rdc.addActuator(pc);
   rdc.addActuator(led13);
+  
   maison.addPiece(rdc);
+  timer = millis();
 }
 
 static int getIntArg(const char* data, const char* key, int value =-1) {
@@ -201,7 +211,6 @@ static void gouvpc(const char* data, BufferFiller& buf) {
 }*/
 
 void loop(){
-    unsigned int timer = millis();
     word len = ether.packetReceive();
     word pos = ether.packetLoop(len);
     // check if valid tcp data is received
@@ -249,8 +258,15 @@ void loop(){
           prepared = false;
         }
         
-    } else if ((timer - millis()) >= 1000) {
-        rdc.refresh();
+    } else if ((millis() - timer) >= 1000) {
+#if SERIAL
+      Serial.println("Refresh");
+#endif
+        timer = millis();
+        maison.refresh();
+#if SERIAL
+      Serial.println("fin refresh");
+#endif
     }
 }
 

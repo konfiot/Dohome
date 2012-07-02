@@ -34,6 +34,7 @@ bool Home::fillJSONData(BufferFiller &buf){
       buf.emit_p(PSTR("\"h\":{\"n\":\"$S\",\"p\":["), _name);
       
       for (byte i = 0 ; i < _pieces.size() ; i++){
+        if (i > 0) buf.emit_p(PSTR(","));
         _pieces[i]->fillJSONData(buf);
       }
       

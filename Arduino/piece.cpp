@@ -29,12 +29,14 @@ bool Piece::addActuator(Actuator &actuator){
 bool Piece::fillJSONData(BufferFiller &buf){      
       buf.emit_p(PSTR("{\"n\":\"$S\",\"i\":$D,\"s\":["), _name, _id);
       
-      for (int i = 0 ; i < _sensors.size() ; i++){
+      for (byte i = 0 ; i < _sensors.size() ; i++){
+        if (i > 0) buf.emit_p(PSTR(","));
         _sensors[i]->getJSONData(buf);
       }
       
       buf.emit_p(PSTR("],\"a\":["));
-      for (int i = 0 ; i < _sensors.size() ; i++){
+      for (byte i = 0 ; i < _actuators.size() ; i++){
+        if (i > 0) buf.emit_p(PSTR(","));
         _actuators[i]->getJSONData(buf);
       }
       buf.emit_p(PSTR("]}"));
@@ -44,6 +46,9 @@ bool Piece::fillJSONData(BufferFiller &buf){
 bool Piece::refresh(){
     for (byte i = 0 ; i < _sensors.size() ; i++){
       _sensors[i]->refresh();
+    }
+    for (byte i = 0 ; i < _actuators.size() ; i++){
+      _actuators[i]->refresh();
     }
     return true;  
 }
@@ -58,11 +63,11 @@ bool Piece::exec(){
 }
 
 Piece::~Piece(){
-	for (int i = 0 ; i < _sensors.size() ; i++){
+	for (byte i = 0 ; i < _sensors.size() ; i++){
 		delete _sensors[i];
 		_sensors[i] = NULL;
 	}
-	for (int i = 0 ; i < _actuators.size() ; i++){
+	for (byte i = 0 ; i < _actuators.size() ; i++){
 		delete _actuators[i];
 		_actuators[i] = NULL;
 	}

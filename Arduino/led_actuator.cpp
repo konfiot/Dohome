@@ -1,4 +1,3 @@
-#include <Arduino.h>
 #include "led_actuator.h"
 
 Led_Actuator::Led_Actuator(const char *name, byte pin) : Actuator::Actuator(name), _pin(pin){
@@ -7,6 +6,9 @@ Led_Actuator::Led_Actuator(const char *name, byte pin) : Actuator::Actuator(name
 bool Led_Actuator::init(byte id){  
   Actuator::init(id);
   pinMode(_pin, OUTPUT);
+}
+
+bool Led_Actuator::refresh(){
 }
 
 bool Led_Actuator::prepare(const char *arg){
