@@ -11,11 +11,17 @@
 
 BMP085_Sensor pression_in("Interieur");
 Led_Actuator led13("13", 13);
-byte mac[] = {0x00,0x24,0x1D,0xE9,0x27,0xAA};
-byte ip[] = {192,168,0,12};
-PC_Actuator pc("PC", mac, ip);
+byte mac[6] = {0x00,0x24,0x1D,0xE9,0x27,0xAA};
+byte ip[4] = {192,168,0,12};
+PC_Actuator pc_rdc("PC_R", mac, ip);
 Piece rdc("RDC");
+
 Home maison("Toussaint");
+
+Piece bureau("Bureau");
+byte mac2[6] = {0x00,0x1D,0x72,0xBF,0x59,0x6B};
+byte ip2[4] = {192,168,0,42};
+PC_Actuator pc_bureau("PC_B", mac2, ip2);
 
 bool prepared = false;
 
@@ -86,10 +92,14 @@ void setup(){
   }*/
   
   rdc.addSensor(pression_in);
-  rdc.addActuator(pc);
+  rdc.addActuator(pc_rdc);
   rdc.addActuator(led13);
   
+  bureau.addActuator(pc_bureau);
+  
   maison.addPiece(rdc);
+  maison.addPiece(bureau);
+  maison.init();
   timer = millis();
 }
 

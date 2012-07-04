@@ -18,12 +18,18 @@ bool PC_Actuator::refresh(){
     
     // report whenever a reply to our outgoing ping comes back
     if (len > 0 && ether.packetLoopIcmpCheckReply((uint8_t*)_ip)) {
+#if SERIAL
+      Serial.println("Ping - OK");
+#endif
       if(_val == 2){
         _val = 1;
       }
       return true;
     }
   }
+#if SERIAL
+      Serial.println("Ping - NOK");
+#endif
   _val = 2;
   return true;
   
@@ -32,7 +38,7 @@ bool PC_Actuator::refresh(){
 bool PC_Actuator::prepare(const char *arg){
     int val;
     val = atoi(arg);
-    if ((val == 0) || (val == 1)){
+    if ((val == 0) || (val == 1)|| (val == 3)){
         _val = val;
         return true;
     } else {

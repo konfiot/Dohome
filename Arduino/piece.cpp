@@ -27,19 +27,23 @@ bool Piece::addActuator(Actuator &actuator){
 }
 
 bool Piece::fillJSONData(BufferFiller &buf){      
-      buf.emit_p(PSTR("{\"n\":\"$S\",\"i\":$D,\"s\":["), _name, _id);
+      buf.emit_p(PSTR("{\"n\":\"$S\",\"i\":$D"), _name, _id);
       
       for (byte i = 0 ; i < _sensors.size() ; i++){
         if (i > 0) buf.emit_p(PSTR(","));
+        else buf.emit_p(PSTR(",\"s\":["));
         _sensors[i]->getJSONData(buf);
       }
       
-      buf.emit_p(PSTR("],\"a\":["));
+      if (_sensors.size() > 0) buf.emit_p(PSTR("]"));
       for (byte i = 0 ; i < _actuators.size() ; i++){
-        if (i > 0) buf.emit_p(PSTR(","));
+        if (i > 0) buf.emit_p(PSTR(",")); 
+        else buf.emit_p(PSTR(",\"a\":["));
+        
         _actuators[i]->getJSONData(buf);
       }
-      buf.emit_p(PSTR("]}"));
+      if (_actuators.size() > 0) buf.emit_p(PSTR("]"));
+      buf.emit_p(PSTR("}"));
     return true;
 }
 
