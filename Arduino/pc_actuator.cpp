@@ -12,7 +12,7 @@ bool PC_Actuator::refresh(){
   ether.clientIcmpRequest((uint8_t*)_ip);
   timer = millis();
   
-  while ((millis() - timer) <= 500){
+  while ((millis() - timer) <= PING_TIMEOUT){
     word len = ether.packetReceive(); // go receive new packets
     word pos = ether.packetLoop(len); // respond to incoming pings
     
@@ -38,7 +38,7 @@ bool PC_Actuator::refresh(){
 bool PC_Actuator::prepare(const char *arg){
     int val;
     val = atoi(arg);
-    if ((val == 0) || (val == 1)|| (val == 3)){
+    if ((val == 0) || (val == 1) || (val == 3)){
         _val = val;
         return true;
     } else {
